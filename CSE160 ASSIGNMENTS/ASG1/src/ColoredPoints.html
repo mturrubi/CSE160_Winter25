@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Colored Points</title>
+    <style>
+        .button-container {
+            margin: 10px 0;
+            text-align: left; /* Center the buttons if needed */
+        }
+
+        .slider-container {
+            margin: 10px 0;
+        }
+
+        label {
+            display: inline-block;
+            width: 50px;
+        }
+
+        button {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body onload="main();">
+    <canvas id="webgl" width="400" height="400">
+        Please use a browser that supports "canvas".
+    </canvas>
+
+    <!-- Button container -->
+    <div class="button-container">
+        <button id="clear-canvas">Clear Canvas</button>
+    </div>
+
+    <!-- Sliders -->
+    <div class="slider-container">
+        <label for="red">Red:</label>
+        <input type="range" id="red" min="0" max="255" step="1" value="255">
+        <span id="red-value">255</span>
+    </div>
+    <div class="slider-container">
+        <label for="green">Green:</label>
+        <input type="range" id="green" min="0" max="255" step="1" value="255">
+        <span id="green-value">255</span>
+    </div>
+    <div class="slider-container">
+        <label for="blue">Blue:</label>
+        <input type="range" id="blue" min="0" max="255" step="1" value="255">
+        <span id="blue-value">255</span>
+    </div>
+    <div class="slider-container">
+        <label for="size">Size:</label>
+        <input type="range" id="size" min="1" max="100" step="1" value="10">
+        <span id="size-value">10</span>
+    </div>
+
+    <!-- Script files -->
+    <script src="../lib/cuon-utils.js"></script>
+    <script src="../lib/webgl-utils.js"></script>
+    <script src="../lib/webgl-debug.js"></script>
+    <script src="../src/ColoredPoints.js"></script>
+</body>
+</html>
+
+
