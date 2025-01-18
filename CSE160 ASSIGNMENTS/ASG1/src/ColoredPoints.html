@@ -2,66 +2,89 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Colored Points</title>
+    <title>Change a Point Color</title>
     <style>
-        .button-container {
-            margin: 10px 0;
-            text-align: left; /* Center the buttons if needed */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+
+        canvas {
+            border: 1px solid black;
         }
 
         .slider-container {
             margin: 10px 0;
         }
 
-        label {
+        .slider-label {
             display: inline-block;
             width: 50px;
+            font-weight: bold;
+        }
+
+        .slider {
+            width: 200px;
+        }
+
+        .buttons-container {
+            margin-top: 20px;
         }
 
         button {
-            margin-bottom: 10px;
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
         }
+
+            button:hover {
+                background-color: #0056b3;
+            }
     </style>
 </head>
-<body onload="main();">
+<body onload="main()">
     <canvas id="webgl" width="400" height="400">
         Please use a browser that supports "canvas".
     </canvas>
 
-    <!-- Button container -->
-    <div class="button-container">
-        <button id="clear-canvas">Clear Canvas</button>
+    <p id="stats">XXX</p>
+
+    <div class="buttons-container">
+        <button id="pointButton">Point</button>
+        <button id="triButton">Triangle</button>
+        <button id="circleButton">Circle</button>
+        <button id="ClearButton">Clear</button>
     </div>
 
-    <!-- Sliders -->
     <div class="slider-container">
-        <label for="red">Red:</label>
-        <input type="range" id="red" min="0" max="255" step="1" value="255">
-        <span id="red-value">255</span>
+        <label class="slider-label" for="sizeSlide">Size</label>
+        <input type="range" min="0" max="100" value="5" class="slider" id="sizeSlide" />
     </div>
     <div class="slider-container">
-        <label for="green">Green:</label>
-        <input type="range" id="green" min="0" max="255" step="1" value="255">
-        <span id="green-value">255</span>
+        <label class="slider-label" for="redSlide">Red</label>
+        <input type="range" min="0" max="100" value="100" class="slider" id="redSlide" />
     </div>
     <div class="slider-container">
-        <label for="blue">Blue:</label>
-        <input type="range" id="blue" min="0" max="255" step="1" value="255">
-        <span id="blue-value">255</span>
+        <label class="slider-label" for="greenSlide">Green</label>
+        <input type="range" min="0" max="100" value="0" class="slider" id="greenSlide" />
     </div>
     <div class="slider-container">
-        <label for="size">Size:</label>
-        <input type="range" id="size" min="1" max="100" step="1" value="10">
-        <span id="size-value">10</span>
+        <label class="slider-label" for="blueSlide">Blue</label>
+        <input type="range" min="0" max="100" value="0" class="slider" id="blueSlide" />
     </div>
 
-    <!-- Script files -->
-    <script src="../lib/cuon-utils.js"></script>
     <script src="../lib/webgl-utils.js"></script>
     <script src="../lib/webgl-debug.js"></script>
-    <script src="../src/ColoredPoints.js"></script>
+    <script src="../lib/cuon-utils.js"></script>
+    <script src="triangle.js"></script>
+    <script src="Circle.js"></script>
+    <script src="Point.js"></script>
+    <script src="ColoredPoints.js"></script>
 </body>
 </html>
-
-

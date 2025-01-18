@@ -1,10 +1,10 @@
 // Vertex shader program
 var VSHADER_SOURCE = `
     attribute vec4 a_Position;
-    uniform float u_PointSize;
+    uniform float u_Size;
     void main() {
         gl_Position = a_Position;
-        gl_PointSize = u_PointSize;
+        gl_PointSize = u_Size;
     }`;
 
 // Fragment shader program
@@ -19,136 +19,145 @@ let canvas;
 let gl;
 let a_Position;
 let u_FragColor;
-let u_PointSize;
-let shapesList = []; // Array to store all shapes
-let currentColor = [1.0, 1.0, 1.0, 1.0]; // Default color is white
-let currentSize = 10.0; // Default size
-
-// Point Class
-class Point {
-    constructor(position, color, size) {
-        this.position = position; // [x, y]
-        this.color = color;       // [r, g, b, a]
-        this.size = size;         // float
-    }
-
-    render() {
-        // Pass the position, color, and size to the shaders
-        gl.vertexAttrib3f(a_Position, this.position[0], this.position[1], 0.0);
-        gl.uniform4f(u_FragColor, this.color[0], this.color[1], this.color[2], this.color[3]);
-        gl.uniform1f(u_PointSize, this.size);
-
-        // Draw the point
-        gl.drawArrays(gl.POINTS, 0, 1);
-    }
-}
+let u_Size;
 
 function setupWebGL() {
+    // Retrieve <canvas> element
     canvas = document.getElementById('webgl');
-    gl = canvas.getContext('webgl', { preserveDrawingBuffer: true }) || canvas.getContext('experimental-webgl', { preserveDrawingBuffer: true });
+
+    // Get the rendering context for WebGL
+    gl = canvas.getContext("webgl", {perserveDrawingBuffer: true})
     if (!gl) {
         console.log('Failed to get the rendering context for WebGL');
         return;
     }
 }
 
-function setupMouseEvents() {
-    canvas.onmousedown = click;
-    canvas.onmousemove = (ev) => {
-        if (ev.buttons === 1) {
-            click(ev);
-        }
-    };
-}
-
 function connectVariablesToGLSL() {
+    // Initialize shaders
     if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
         console.log('Failed to initialize shaders.');
         return;
     }
 
+    // Get the storage location of a_Position
     a_Position = gl.getAttribLocation(gl.program, 'a_Position');
     if (a_Position < 0) {
         console.log('Failed to get the storage location of a_Position');
         return;
     }
 
+    // Get the storage location of u_FragColor
     u_FragColor = gl.getUniformLocation(gl.program, 'u_FragColor');
     if (!u_FragColor) {
         console.log('Failed to get the storage location of u_FragColor');
         return;
     }
-
-    u_PointSize = gl.getUniformLocation(gl.program, 'u_PointSize');
-    if (!u_PointSize) {
-        console.log('Failed to get the storage location of u_PointSize');
+    // Get the storage location of u_Size
+    u_Size = gl.getUniformLocation(gl.program, 'u_Size');
+    if (!u_Size) {
+        console.log('Failed to get the storage location of u_Size');
         return;
     }
 }
 
-function setupColorSliders() {
-    const redSlider = document.getElementById('red');
-    const greenSlider = document.getElementById('green');
-    const blueSlider = document.getElementById('blue');
-    const redValue = document.getElementById('red-value');
-    const greenValue = document.getElementById('green-value');
-    const blueValue = document.getElementById('blue-value');
+const POINT = 0;
+const TRIANGLE = 1; 
+const CIRCLE = 2;
 
-    function updateColor() {
-        redValue.textContent = redSlider.value;
-        greenValue.textContent = greenSlider.value;
-        blueValue.textContent = blueSlider.value;
+g_selectedColor = [
+    document.getElementById('redSlide').value / 100,
+    document.getElementById('greenSlide').value / 100,
+    document.getElementById('blueSlide').value / 100,
+    1.0
+];
+let g_selectedSize = 5;
+let g_selectedType = POINT;
 
-        currentColor[0] = parseInt(redSlider.value) / 255.0;
-        currentColor[1] = parseInt(greenSlider.value) / 255.0;
-        currentColor[2] = parseInt(blueSlider.value) / 255.0;
-    }
+// Set up actions for the HTML UI elements
+function addActionsForHtmlUI() {
+    // Button Events (Shape Type)
+    document.getElementById('pointButton').onclick = function () {
+        g_selectedType = POINT;
+    };
+    document.getElementById('triButton').onclick = function () {
+        g_selectedType = TRIANGLE;
+    };
+    document.getElementById('circleButton').onclick = function () {
+        g_selectedType = CIRCLE;
+    };
+    document.getElementById('ClearButton').onclick = function () {
+        g_shapesList = [];
+        renderAllShapes();
+    };
+    document.getElementById('sizeSlide').addEventListener('mouseup', function () {
+        g_selectedSize = this.value;
+    });
+    document.getElementById('redSlide').addEventListener('mouseup', function () {
+        g_selectedColor[0] = this.value / 100;
+    });
 
-    redSlider.addEventListener('input', updateColor);
-    greenSlider.addEventListener('input', updateColor);
-    blueSlider.addEventListener('input', updateColor);
+    document.getElementById('greenSlide').addEventListener('mouseup', function () {
+        g_selectedColor[1] = this.value / 100;
+    });
 
-    updateColor();
+    document.getElementById('blueSlide').addEventListener('mouseup', function () {
+        g_selectedColor[2] = this.value / 100;
+    });
+
 }
 
-function setupSizeSlider() {
-    const sizeSlider = document.getElementById('size');
-    const sizeValue = document.getElementById('size-value');
+function main() {
+    // Set up canvas and gl variables
+    setupWebGL();
 
-    function updateSize() {
-        sizeValue.textContent = sizeSlider.value;
-        currentSize = parseFloat(sizeSlider.value);
+    // Set up GLSL shader programs and connect GLSL variables
+    connectVariablesToGLSL();
+
+    addActionsForHtmlUI();
+
+    // Register function (event handler) to be called on a mouse press
+    canvas.onmousedown = click;
+
+    canvas.onmousemove = function (ev) {
+        if (ev.buttons == 1) {
+            click(ev)
+        }
     }
+    // Specify the color for clearing <canvas>
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-    sizeSlider.addEventListener('input', updateSize);
-
-    updateSize();
+    // Clear <canvas>
+    gl.clear(gl.COLOR_BUFFER_BIT);
 }
+
+var g_shapesList = [];
 
 function click(ev) {
+    // Extract the event click and return it in WebGL coordinates
     let [x, y] = convertCoordinatesEventToGL(ev);
 
-    console.log(`Mouse clicked at (${x}, ${y})`); // Debugging log
-
-    // Create a new Point object and add it to shapesList
-    const point = new Point([x, y], [...currentColor], currentSize);
-    shapesList.push(point);
-
-    measurePerformance(renderAllShapes, "Rendering");
+    let point;
+    if (g_selectedType == POINT) {
+        point = new Point();
+    } else if (g_selectedType == TRIANGLE) {
+        point = new Triangle();
+    } else {
+        point = new Circle;
+    }
+    point.position = [x, y];
+    point.color = g_selectedColor.slice();
+    point.size = g_selectedSize;
+    g_shapesList.push(point);
+    // Draw every shape that is supposed to be in the canvas
+    renderAllShapes();
 }
 
-// Utility function to measure performance
-function measurePerformance(fn, label) {
-    const start = performance.now();
-    fn();
-    const end = performance.now();
-    console.log(`${label} took ${end - start} ms`);
-}
-
+// Extract the event click and return it in WebGL coordinates
 function convertCoordinatesEventToGL(ev) {
-    let x = ev.clientX; // x coordinate of a mouse pointer
-    let y = ev.clientY; // y coordinate of a mouse pointer
-    let rect = ev.target.getBoundingClientRect();
+    var x = ev.clientX; // x coordinate of a mouse pointer
+    var y = ev.clientY; // y coordinate of a mouse pointer
+    var rect = ev.target.getBoundingClientRect();
 
     x = ((x - rect.left) - canvas.width / 2) / (canvas.width / 2);
     y = (canvas.height / 2 - (y - rect.top)) / (canvas.height / 2);
@@ -156,35 +165,36 @@ function convertCoordinatesEventToGL(ev) {
     return [x, y];
 }
 
+// Draw every shape that is supposed to be in the canvas
+// Draw every shape that is supposed to be in the canvas
 function renderAllShapes() {
+    // Check the time at the start of this function
+    var startTime = performance.now();
+
+    // Clear <canvas>
     gl.clear(gl.COLOR_BUFFER_BIT);
-    for (let shape of shapesList) {
-        shape.render();
+
+    // Draw each shape in the list
+    var len = g_shapesList.length;
+    for (var i = 0; i < len; i++) {
+        g_shapesList[i].render();
     }
+
+    // Check the time at the end of the function, and show on the web page
+    var duration = performance.now() - startTime;
+    sendTextToHTML(
+        "numdot: " + len + " ms: " + Math.floor(duration) +
+        " fps: " + Math.floor(1000 / duration),
+        "stats"
+    );
 }
 
-function setupClearButton() {
-    const clearButton = document.getElementById('clear-canvas');
-
-    clearButton.addEventListener('click', () => {
-        // Clear the shapes list
-        shapesList = [];
-
-        // Re-render the canvas (empty now)
-        renderAllShapes();
-    });
-}
-
-function main() {
-    setupWebGL();
-    connectVariablesToGLSL();
-    setupColorSliders();
-    setupSizeSlider();
-    setupClearButton();
-    setupMouseEvents();
-
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-
-    measurePerformance(renderAllShapes, "Rendering");
+// Set the text of an HTML element
+function sendTextToHTML(text, htmlID) {
+    var htmlElem = document.getElementById(htmlID);
+    if (!htmlElem) {
+        console.log("Failed to get " + htmlID + " from HTML");
+        return;
+    }
+    htmlElem.innerHTML = text;
 }
