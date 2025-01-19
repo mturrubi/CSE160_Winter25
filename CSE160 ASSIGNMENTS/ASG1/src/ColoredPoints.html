@@ -6,8 +6,15 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
             text-align: center;
+            background-image: url('../lib/wp3260301.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            overflow: hidden;
         }
 
         canvas {
@@ -15,17 +22,23 @@
         }
 
         .slider-container {
-            margin: 10px 0;
+            margin: 10px;
         }
 
         .slider-label {
+            text-align: left;
             display: inline-block;
-            width: 50px;
+            width: 80px;
             font-weight: bold;
         }
 
         .slider {
-            width: 200px;
+            width: 500px;
+            gap: 10px;
+        }
+
+        .id {
+            width: 50px;
         }
 
         .buttons-container {
@@ -60,23 +73,34 @@
         <button id="triButton">Triangle</button>
         <button id="circleButton">Circle</button>
         <button id="ClearButton">Clear</button>
+        <button id="drawTreeButton">Draw Christmas Tree</button>
+        <button onclick="window.location.href='../CSE160_Winter25/index.html';">Go Back</button>
     </div>
 
     <div class="slider-container">
         <label class="slider-label" for="sizeSlide">Size</label>
         <input type="range" min="0" max="100" value="5" class="slider" id="sizeSlide" />
+        <span id="sizeValue">5</span>
+    </div>
+    <div class="slider-container">
+        <label class="slider-label" for="segmentsSlide">Segments</label>
+        <input type="range" min="3" max="100" value="10" class="slider" id="segmentsSlide" />
+        <span id="segmentsValue">10</span>
     </div>
     <div class="slider-container">
         <label class="slider-label" for="redSlide">Red</label>
-        <input type="range" min="0" max="100" value="100" class="slider" id="redSlide" />
+        <input type="range" min="0" max="255" value="255" class="slider" id="redSlide" />
+        <span id="redValue">255</span>
     </div>
     <div class="slider-container">
         <label class="slider-label" for="greenSlide">Green</label>
-        <input type="range" min="0" max="100" value="0" class="slider" id="greenSlide" />
+        <input type="range" min="0" max="255" value="0" class="slider" id="greenSlide" />
+        <span id="greenValue">0</span>
     </div>
     <div class="slider-container">
         <label class="slider-label" for="blueSlide">Blue</label>
-        <input type="range" min="0" max="100" value="0" class="slider" id="blueSlide" />
+        <input type="range" min="0" max="255" value="0" class="slider" id="blueSlide" />
+        <span id="blueValue">0</span>
     </div>
 
     <script src="../lib/webgl-utils.js"></script>
@@ -85,6 +109,7 @@
     <script src="triangle.js"></script>
     <script src="Circle.js"></script>
     <script src="Point.js"></script>
+    <script src="Tree.js"></script>
     <script src="ColoredPoints.js"></script>
 </body>
 </html>

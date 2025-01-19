@@ -4,33 +4,41 @@ class Circle {
         this.position = [0.0, 0.0, 0.0];
         this.color = [1.0, 1.0, 1.0, 1.0];
         this.size = 5.0;
-        this.segments = 10;
+        this.segments = 10; // Default segments
     }
 
     render() {
-        var xy = this.position;
-        var rgba = this.color;
-        var size = this.size;
+        const xy = this.position;
+        const rgba = this.color;
+        const size = this.size;
 
-        // Pass the color of a point to u_FragColor variable
+        // Pass the color to the fragment shader
         gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
 
-        // Draw
-        var d = this.size / 200.0; // delta
+        // Precompute triangle vertices
+        const radius = size / 200.0;
+        const vertices = [];
+        const angleStep = (2 * Math.PI) / this.segments;
 
-        let angleStep = 360 / this.segments;
-        for (var angle = 0; angle < 360; angle += angleStep) {
-            let centerPt = [xy[0], xy[1]];
-            let angle1 = angle;
-            let angle2 = angle + angleStep;
+        for (let i = 0; i < this.segments; i++) {
+            const angle1 = i * angleStep;
+            const angle2 = (i + 1) * angleStep;
 
-            let vec1 = [Math.cos(angle1 * Math.PI / 180) * d, Math.sin(angle1 * Math.PI / 180) * d];
-            let vec2 = [Math.cos(angle2 * Math.PI / 180) * d, Math.sin(angle2 * Math.PI / 180) * d];
+            vertices.push(
+                xy[0], xy[1], // Center
+                xy[0] + Math.cos(angle1) * radius, xy[1] + Math.sin(angle1) * radius, // Point 1
+                xy[0] + Math.cos(angle2) * radius, xy[1] + Math.sin(angle2) * radius // Point 2
+            );
+        }
 
-            let pt1 = [centerPt[0] + vec1[0], centerPt[1] + vec1[1]];
-            let pt2 = [centerPt[0] + vec2[0], centerPt[1] + vec2[1]];
-
-            drawTriangle([centerPt[0], centerPt[1], pt1[0], pt1[1], pt2[0], pt2[1]]);
+        // Draw triangles using the precomputed vertices
+        for (let i = 0; i < vertices.length; i += 6) {
+            drawTriangle([
+                vertices[i], vertices[i + 1], // Center
+                vertices[i + 2], vertices[i + 3], // Point 1
+                vertices[i + 4], vertices[i + 5]  // Point 2
+            ]);
         }
     }
 }
+

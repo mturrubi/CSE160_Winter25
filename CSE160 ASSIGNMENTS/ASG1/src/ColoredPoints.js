@@ -65,18 +65,19 @@ const POINT = 0;
 const TRIANGLE = 1; 
 const CIRCLE = 2;
 
-g_selectedColor = [
-    document.getElementById('redSlide').value / 100,
-    document.getElementById('greenSlide').value / 100,
-    document.getElementById('blueSlide').value / 100,
+let g_selectedColor = [
+    document.getElementById('redSlide').value / 255,
+    document.getElementById('greenSlide').value / 255,
+    document.getElementById('blueSlide').value / 255,
     1.0
 ];
+
 let g_selectedSize = 5;
 let g_selectedType = POINT;
+let g_selectedSegments = 10;
 
-// Set up actions for the HTML UI elements
+
 function addActionsForHtmlUI() {
-    // Button Events (Shape Type)
     document.getElementById('pointButton').onclick = function () {
         g_selectedType = POINT;
     };
@@ -90,21 +91,48 @@ function addActionsForHtmlUI() {
         g_shapesList = [];
         renderAllShapes();
     };
-    document.getElementById('sizeSlide').addEventListener('mouseup', function () {
+    document.getElementById('drawTreeButton').onclick = function () {
+        const tree = new ChristmasTree();
+        tree.render();
+    };
+    const sizeSlider = document.getElementById('sizeSlide');
+    const sizeValue = document.getElementById('sizeValue');
+    sizeSlider.addEventListener('input', function () {
+        sizeValue.textContent = this.value; // Update label
         g_selectedSize = this.value;
     });
-    document.getElementById('redSlide').addEventListener('mouseup', function () {
-        g_selectedColor[0] = this.value / 100;
+
+    // Segments slider
+    const segmentsSlider = document.getElementById('segmentsSlide');
+    const segmentsValue = document.getElementById('segmentsValue');
+    segmentsSlider.addEventListener('input', function () {
+        segmentsValue.textContent = this.value;
+        g_selectedSegments = this.value;
     });
 
-    document.getElementById('greenSlide').addEventListener('mouseup', function () {
-        g_selectedColor[1] = this.value / 100;
+    // Red slider
+    const redSlider = document.getElementById('redSlide');
+    const redValue = document.getElementById('redValue');
+    redSlider.addEventListener('input', function () {
+        redValue.textContent = this.value;
+        g_selectedColor[0] = this.value / 255;
     });
 
-    document.getElementById('blueSlide').addEventListener('mouseup', function () {
-        g_selectedColor[2] = this.value / 100;
+    // Green slider
+    const greenSlider = document.getElementById('greenSlide');
+    const greenValue = document.getElementById('greenValue');
+    greenSlider.addEventListener('input', function () {
+        greenValue.textContent = this.value;
+        g_selectedColor[1] = this.value / 255;
     });
 
+    // Blue slider
+    const blueSlider = document.getElementById('blueSlide');
+    const blueValue = document.getElementById('blueValue');
+    blueSlider.addEventListener('input', function () {
+        blueValue.textContent = this.value;
+        g_selectedColor[2] = this.value / 255;
+    });
 }
 
 function main() {
@@ -137,18 +165,26 @@ function click(ev) {
     // Extract the event click and return it in WebGL coordinates
     let [x, y] = convertCoordinatesEventToGL(ev);
 
-    let point;
-    if (g_selectedType == POINT) {
-        point = new Point();
-    } else if (g_selectedType == TRIANGLE) {
-        point = new Triangle();
-    } else {
-        point = new Circle;
+    let shape;
+    if (g_selectedType === POINT) {
+        shape = new Point();
+    } else if (g_selectedType === TRIANGLE) {
+        // Create a triangle with a default size and dynamic color
+        const size = g_selectedSize / 100; // Scale size down for triangle dimensions
+        shape = new Triangle(
+            [x - size, y - size, x + size, y - size, x, y + size], // Default triangle vertices
+            g_selectedColor.slice() // Current color
+        );
+    } else if (g_selectedType === CIRCLE) {
+        shape = new Circle();
+        shape.segments = g_selectedSegments;
     }
-    point.position = [x, y];
-    point.color = g_selectedColor.slice();
-    point.size = g_selectedSize;
-    g_shapesList.push(point);
+
+    shape.position = [x, y];
+    shape.color = g_selectedColor.slice();
+    shape.size = g_selectedSize;
+    g_shapesList.push(shape);
+
     // Draw every shape that is supposed to be in the canvas
     renderAllShapes();
 }
