@@ -1,3 +1,8 @@
+// ColoredPoints.js
+// Martin Turrubiates
+// mturrubi@ucsc.edu
+// Notes: I used gpt to try to handle some file location errors towards the end as for some reason the git could not locate
+// any of my files for the life of it
 // Vertex shader program
 var VSHADER_SOURCE = `
     attribute vec4 a_Position;

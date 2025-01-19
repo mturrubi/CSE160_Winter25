@@ -1,3 +1,6 @@
+// Points.js
+// Martin Turrubiates
+// mturrubi@ucsc.edu
 class Point {
     constructor() {
         this.type = 'point';

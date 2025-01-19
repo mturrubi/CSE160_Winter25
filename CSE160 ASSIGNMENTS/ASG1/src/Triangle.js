@@ -1,3 +1,6 @@
+// Triangle.js
+// Martin Turrubiates
+// mturrubi@ucsc.edu
 class Triangle {
     constructor(vertices, color) {
         this.type = 'triangle';

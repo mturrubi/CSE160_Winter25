@@ -1,3 +1,6 @@
+// Tree.js
+// Martin Turrubiates
+// mturrubi@ucsc.edu
 class ChristmasTree {
     constructor() {
         this.shapes = [];

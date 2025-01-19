@@ -1,3 +1,6 @@
+// Circle.js
+// Martin Turrubiates
+// mturrubi@ucsc.edu
 class Circle {
     constructor() {
         this.type = 'circle';
