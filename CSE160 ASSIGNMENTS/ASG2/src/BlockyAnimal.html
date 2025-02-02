@@ -1,0 +1,137 @@
+<!-- ColoredPoints.html -->
+<!-- Martin Turrubiates -->
+<!-- mturrubi -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Blocky Animal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-image: url('../lib/wp3260301.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        canvas {
+            border: 1px solid black;
+        }
+
+        .color-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+            .color-container div {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+        .slider-container {
+            margin: 10px;
+        }
+
+        .slider-label {
+            text-align: left;
+            display: inline-block;
+            width: 150px;
+            font-weight: bold;
+        }
+
+        .slider {
+            width: 500px;
+            gap: 10px;
+        }
+
+        .buttons-container {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background-color: #0056b3;
+            }
+    </style>
+</head>
+<body>
+    <p><strong>Note:</strong> I added color sliders for the three blocks, enabled mouse-based movement for the page, and implemented color adjustment variables instead of hard-coded values.</p>
+    <canvas id="webgl" width="400" height="400">
+        Please use a browser that supports "canvas".
+    </canvas>
+
+    <p id="stats">XXX</p>
+
+    <div class="buttons-container">
+        <button onclick="window.location.href='/CSE160_Winter25/index.html';">Go Back</button>
+        <button id="animationYellowOnButton">Yellow: ON</button>
+        <button id="animationYellowOffButton">Yellow: OFF</button>
+        <button id="animationMagentaOnButton">Magenta: ON</button>
+        <button id="animationMagentaOffButton">Magenta: OFF</button>
+    </div>
+
+    <div class="color-container">
+        <div>
+            <label for="bodyColor">Body Color:</label>
+            <input type="color" id="bodyColor" value="#ffffff">
+        </div>
+        <div>
+            <label for="yellowColor">Yellow Shape Color:</label>
+            <input type="color" id="yellowColor" value="#ffffff">
+        </div>
+        <div>
+            <label for="magentaColor">Magenta Shape Color:</label>
+            <input type="color" id="magentaColor" value="#ffffff">
+        </div>
+    </div>
+
+    <div class="slider-container">
+        <label class="slider-label" for="yellowSlide">Yellow Block Angle</label>
+        <input type="range" min="0" max="360" value="0" class="slider" id="yellowSlide" />
+        <span id="yellowValue">0*</span>
+    </div>
+
+    <div class="slider-container">
+        <label class="slider-label" for="magentaSlide">Magenta Joint Angle</label>
+        <input type="range" min="0" max="360" value="0" class="slider" id="magentaSlide" />
+        <span id="magentaValue">0*</span>
+    </div>
+
+    <script src="../lib/webgl-utils.js"></script>
+    <script src="../lib/webgl-debug.js"></script>
+    <script src="../lib/cuon-utils.js"></script>
+    <script src="../lib/cuon-matrix.js"></script>
+    <script src="Triangle.js"></script>
+    <script src="Circle.js"></script>
+    <script src="Point.js"></script>
+    <script src="Cube.js"></script>
+    <script src="BlockyAnimal.js"></script>
+    <script>
+        window.onload = function () {
+            main();
+        };
+    </script>
+</body>
+</html>
+
