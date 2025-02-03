@@ -76,7 +76,7 @@
     </style>
 </head>
 <body>
-    <p><strong>Note:</strong> I added color sliders for the three blocks, enabled mouse-based movement for the page, and implemented color adjustment variables instead of hard-coded values.</p>
+    <p><strong>Note:</strong> I added color sliders for the three blocks, enabled mouse-based movement for the page, and implemented color adjustment variables instead of hard-coded values. Added a pyramid and joined it to the top cube too</p>
     <canvas id="webgl" width="400" height="400">
         Please use a browser that supports "canvas".
     </canvas>
@@ -85,10 +85,12 @@
 
     <div class="buttons-container">
         <button onclick="window.location.href='/CSE160_Winter25/index.html';">Go Back</button>
-        <button id="animationYellowOnButton">Yellow: ON</button>
-        <button id="animationYellowOffButton">Yellow: OFF</button>
-        <button id="animationMagentaOnButton">Magenta: ON</button>
-        <button id="animationMagentaOffButton">Magenta: OFF</button>
+        <button id="animationYellowOnButton">Rectangle: ON</button>
+        <button id="animationYellowOffButton">Rectangle: OFF</button>
+        <button id="animationMagentaOnButton">Cube: ON</button>
+        <button id="animationMagentaOffButton">Cube: OFF</button>
+        <button id="animationHandOnButton">Pyramid: ON</button>
+        <button id="animationHandOffButton">Pyramid: OFF</button>
     </div>
 
     <div class="color-container">
@@ -103,6 +105,10 @@
         <div>
             <label for="magentaColor">Magenta Shape Color:</label>
             <input type="color" id="magentaColor" value="#ffffff">
+        </div>
+        <div>
+            <label for="handColor">Hand (Pyramid) Color:</label>
+            <input type="color" id="handColor" value="#ffffff">
         </div>
     </div>
 

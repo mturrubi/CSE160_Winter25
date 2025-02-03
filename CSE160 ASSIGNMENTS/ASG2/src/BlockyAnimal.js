@@ -84,8 +84,10 @@ let g_selectedSegments = 10;
 let g_globalAngle = 0;
 let g_yellowAngle = 0;
 let g_magentaAngle = 0;
+let g_handAngle = 0;
 let g_yellowAnimation = false;
 let g_magentaAnimation = false;
+let g_handAnimation = false;
 let g_mouseDown = false;
 let g_globalAngleX = 0;
 let g_globalAngleY = 0;
@@ -94,6 +96,8 @@ let g_lastMouseY = 0;
 let g_yellowColor = [1.0, 1.0, 1.0, 1.0];
 let g_magentaColor = [1.0, 1.0, 1.0, 1.0];
 let g_bodyColor = [1.0, 1.0, 1.0, 1.0];
+let g_handColor = [1.0, 1.0, 1.0, 1.0];
+
 
 function addActionsForHtmlUI() {
     document.getElementById('animationYellowOnButton').addEventListener('click', function () {
@@ -108,6 +112,14 @@ function addActionsForHtmlUI() {
     document.getElementById('animationMagentaOffButton').addEventListener('click', function () {
         g_magentaAnimation = false;
     });
+    document.getElementById('animationHandOnButton').addEventListener('click', function () {
+        g_handAnimation = true;
+    });
+
+    document.getElementById('animationHandOffButton').addEventListener('click', function () {
+        g_handAnimation = false;
+    });
+
     document.getElementById('bodyColor').addEventListener('input', function () {
         g_bodyColor = hexToRgbArray(this.value);
         renderAllShapes();
@@ -122,6 +134,12 @@ function addActionsForHtmlUI() {
         g_magentaColor = hexToRgbArray(this.value);
         renderAllShapes();
     });
+
+    document.getElementById('handColor').addEventListener('input', function () {
+        g_handColor = hexToRgbArray(this.value);
+        renderAllShapes();
+    });
+
 
     document.getElementById('yellowSlide').addEventListener('mousemove', function () {
         g_yellowAngle = this.value;
@@ -213,9 +231,14 @@ function updateAnimationAngles() {
     if (g_yellowAnimation) {
         g_yellowAngle = (360 * Math.sin(g_seconds));
     }
+
     if (g_magentaAnimation) {
         g_magentaAngle = 360 * Math.sin(3 * g_seconds);
     }
+    if (g_handAnimation) {
+        g_handAngle = 360 * Math.sin(2 * g_seconds);
+    }
+
 }
 function renderAllShapes() {
     // Check the time at the start of this function
@@ -253,6 +276,15 @@ function renderAllShapes() {
     magenta.matrix.scale(.3, .3, .3);
     magenta.matrix.translate(-.5, 0, -0.001);
     magenta.render();
+
+    var handMatrix = new Matrix4(yellowCoordinatesMat);
+    handMatrix.translate(0, 0.75, 0);
+    handMatrix.rotate(g_handAngle, 0, 0, 1);
+    handMatrix.scale(2.0, 2.0, 2.0);
+
+    gl.uniformMatrix4fv(u_ModelMatrix, false, handMatrix.elements);
+    drawPyramid3D(g_handColor)
+
 
     // Check the time at the end of the function, and show on the web page
     var duration = performance.now() - startTime;
