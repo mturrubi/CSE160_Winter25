@@ -1,3 +1,6 @@
+// Cube.js
+// Martin Turrubiates
+// mturrubi@ucsc.edu
 class Cube {
     constructor() {
         this.color = [1.0, 1.0, 1.0, 1.0];

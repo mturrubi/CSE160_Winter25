@@ -1,4 +1,4 @@
-// BlockyAnimals.js
+// World.js
 // Martin Turrubiates
 // mturrubi@ucsc.edu
 // Notes: I used gpt to try to handle a naming error and a couple of small things that the tuto didnt show somewhere a long the lines i got lsot on the tuto too

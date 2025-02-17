@@ -1,3 +1,6 @@
+// Triangle.js
+// Martin Turrubiates
+// mturrubi@ucsc.edu
 class Triangle{
    constructor(){
       this.color = [1.0, 1.0, 1.0, 1.0];

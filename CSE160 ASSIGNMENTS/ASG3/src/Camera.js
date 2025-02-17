@@ -1,3 +1,6 @@
+// Camera.js
+// Martin Turrubiates
+// mturrubi@ucsc.edu
 class Camera{
    constructor(){
       this.fov = 60;

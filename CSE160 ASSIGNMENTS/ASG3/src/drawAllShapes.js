@@ -1,4 +1,7 @@
-﻿var g_map=[]
+﻿// drawAllShapes.js
+// Martin Turrubiates
+// mturrubi@ucsc.edu
+var g_map = []
 var placedBlocks = [];
 
 function initMap() {
